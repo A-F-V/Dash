@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Pastel;
 
@@ -13,10 +14,9 @@ namespace Dash
         private ColourPalette palette;
         private ConsoleMenu current;
 
-        public PastelConsole(ColourPalette palette, ConsoleMenu cm)
+        public PastelConsole(ColourPalette palette)
         {
             this.palette = palette;
-            current = cm;
         }
 
         public string Format(string literal, params object[] bindings)
@@ -58,11 +58,15 @@ namespace Dash
             WriteLine(literal);
         }
 
-        public void WriteError(string literal)
+        public void WriteStatement(string literal)
         {
             FormatWriteLine("{-3}",literal);
         }
 
+        public void WriteEmpty()
+        {
+            Console.WriteLine();
+        }
         public void Run()
         {
             if (current.IsEnd())
@@ -77,10 +81,11 @@ namespace Dash
             while (response <= 0 || response > current.optionsCount())
             {
                 DisplayMenu();
+                WriteEmpty();
                 WriteQuestion("Please select an option.");
                 if (!Int32.TryParse(Console.ReadLine(), out response) ||response<=0||response> current.optionsCount())
                 {
-                    WriteError("That is not a valid option. Please try again...");
+                    WriteStatement("That is not a valid option. Please try again...");
                 }
             }
             current.PerformOption(response);
@@ -88,12 +93,19 @@ namespace Dash
             Run();
         }
 
+
+
         private void DisplayMenu()
         {
             for (int choice = 1; choice <= current.optionsCount(); choice++)
             {
                 FormatWriteLine($"{{0}}. {{{choice%2+1}}}",choice,current.OptionTitle(choice));
             }
+        }
+
+        public void SetStartingMenu(ConsoleMenu start)
+        {
+            current = start;
         }
     }
 }

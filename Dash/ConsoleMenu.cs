@@ -15,12 +15,13 @@ namespace Dash
         {
             options = new MenuEntry[0];
         }
-        public ConsoleMenu(string[] stringOptions,Action[] menuAction, ConsoleMenu[] nextMenu)
+
+        public void SetDetails(string[] stringOptions, Action[] menuAction, ConsoleMenu[] nextMenu)
         {
             this.options = new MenuEntry[stringOptions.Length];
             for (int pos = 0; pos < stringOptions.Length; pos++)
             {
-                this.options[pos] = new MenuEntry(stringOptions[pos],menuAction[pos],nextMenu[pos]);
+                this.options[pos] = new MenuEntry(stringOptions[pos], menuAction[pos], nextMenu[pos]);
             }
         }
 
